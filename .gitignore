@@ -1,5 +1,7 @@
-# 编译产物
+# 编译产物与构建输出
 *.class
+target/
+out/
 
 # IDE 配置
 .idea/
