@@ -1,4 +1,4 @@
-package game2048.ai;
+package game2048.search;
 
 import game2048.model.Board;
 import game2048.model.Direction;
@@ -8,9 +8,26 @@ import game2048.model.MoveResult;
  * 期望最大化（expectimax）搜索，用于"提示"和"自动演示"。
  * 只用棋盘本身做评估，不依赖界面，便于单元测试。
  */
-public final class AiSolver {
-    private static final int DEPTH = 2;
+public final class SearchSolver {
+    /** 默认搜索深度（玩家决策层数）。 */
+    public static final int DEFAULT_DEPTH = 3;
+
     private static final double FOUR_PROBABILITY = 0.1;
+
+    private final int depth;
+
+    public SearchSolver() {
+        this(DEFAULT_DEPTH);
+    }
+
+    /** 指定搜索深度的建议器，供基准测试对比不同深度。 */
+    public SearchSolver(int depth) {
+        this.depth = Math.max(1, depth);
+    }
+
+    public int depth() {
+        return depth;
+    }
 
     /** 返回建议的移动方向；无路可走时返回 null。 */
     public Direction suggest(Board board) {
@@ -22,7 +39,7 @@ public final class AiSolver {
             if (!result.isMoved()) {
                 continue;
             }
-            double value = chanceValue(after, DEPTH);
+            double value = chanceValue(after, depth);
             if (value > bestValue) {
                 bestValue = value;
                 best = direction;

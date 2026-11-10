@@ -1,6 +1,6 @@
 package game2048.view;
 
-import game2048.ai.AiSolver;
+import game2048.search.SearchSolver;
 import game2048.model.Difficulty;
 import game2048.model.Direction;
 import game2048.model.Game;
@@ -31,7 +31,7 @@ public final class GameFrame extends JFrame {
     private final Game game;
     private final BoardPanel panel;
     private final SoundPlayer sound = new SoundPlayer();
-    private final AiSolver solver = new AiSolver();
+    private SearchSolver solver = new SearchSolver();
 
     private final Timer demoTimer;
     private final JMenuItem undoItem;
@@ -76,11 +76,11 @@ public final class GameFrame extends JFrame {
         restartItem.addActionListener(e -> restart());
         gameMenu.add(restartItem);
 
-        JMenuItem hintItem = new JMenuItem("AI 提示一步 (H)");
+        JMenuItem hintItem = new JMenuItem("方向提示一步 (H)");
         hintItem.addActionListener(e -> showHint());
         gameMenu.add(hintItem);
 
-        demoItem = new JCheckBoxMenuItem("AI 自动演示 (P)");
+        demoItem = new JCheckBoxMenuItem("自动演示 (P)");
         demoItem.addActionListener(e -> setDemo(demoItem.isSelected()));
         gameMenu.add(demoItem);
 
@@ -135,6 +135,20 @@ public final class GameFrame extends JFrame {
         soundItem = new JCheckBoxMenuItem("音效 (M)", true);
         soundItem.addActionListener(e -> sound.setEnabled(soundItem.isSelected()));
         settings.add(soundItem);
+
+        settings.addSeparator();
+        JMenu depthMenu = new JMenu("搜索深度");
+        ButtonGroup depthGroup = new ButtonGroup();
+        for (int depth : new int[] {3, 4}) {
+            JRadioButtonMenuItem item = new JRadioButtonMenuItem(depth == 3
+                    ? "3 层（默认，快）"
+                    : "4 层（慢，块更大）");
+            item.setSelected(depth == solver.depth());
+            item.addActionListener(e -> solver = new SearchSolver(depth));
+            depthGroup.add(item);
+            depthMenu.add(item);
+        }
+        settings.add(depthMenu);
 
         return settings;
     }

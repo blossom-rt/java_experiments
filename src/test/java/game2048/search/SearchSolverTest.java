@@ -1,17 +1,18 @@
-package game2048.ai;
+package game2048.search;
 
 import game2048.model.Board;
 import game2048.model.Direction;
 import game2048.model.MoveResult;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class AiSolverTest {
+class SearchSolverTest {
 
-    private final AiSolver solver = new AiSolver();
+    private final SearchSolver solver = new SearchSolver();
 
     @Test
     void suggestsMergeWhenAvailable() {
@@ -76,6 +77,18 @@ class AiSolverTest {
         Board roomy = new Board();
         roomy.set(0, 0, 2);
 
-        assertTrue(AiSolver.evaluate(roomy) > AiSolver.evaluate(crowded));
+        assertTrue(SearchSolver.evaluate(roomy) > SearchSolver.evaluate(crowded));
+    }
+
+    @Test
+    void defaultDepthIsThree() {
+        assertEquals(3, new SearchSolver().depth());
+        assertEquals(3, SearchSolver.DEFAULT_DEPTH);
+    }
+
+    @Test
+    void customDepthIsHonoured() {
+        assertEquals(4, new SearchSolver(4).depth());
+        assertEquals(1, new SearchSolver(0).depth());
     }
 }
